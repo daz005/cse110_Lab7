@@ -17,16 +17,16 @@ self.addEventListener('install', function (event) {
       //console.log(cache);
 
       // CONSTANTS
-      const RECIPE_URLS = [
-        'https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json',
-        'https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json',
-        'https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json',
-        'https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json',
-        'https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json',
-        'https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json',
+      const RECIPE_REQUEST = [
+        new Request('https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json'),
+        new Request('https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json'),
+        new Request('https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json'),
+        new Request('https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json'),
+        new Request('https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json'),
+        new Request('https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json'),
       ];      
-
-      return cache.addAll(RECIPE_URLS);
+    
+      return cache.addAll(RECIPE_REQUEST);
     })
   );
 });
@@ -58,6 +58,8 @@ self.addEventListener('fetch', function (event) {
   event.respondWith(
     caches.open(CACHE_NAME).then(function(cache) 
     {
+      console.log(event.request);
+      //console.log(cache.keys());
       return cache.match(event.request).then(function (response) 
       {
         if(response)
@@ -69,7 +71,26 @@ self.addEventListener('fetch', function (event) {
 
         return fetch(event.request).then(function(response) 
         {
-          //cache.put(event.request, response.clone());
+          // check if request is made by chrome extensions or web page
+          // if request is made for web page url must contains http.
+          // if (!(event.request.url.indexOf('http') === 0)) 
+          //   return response; // skip the request. if request is not made with http protocol
+
+          if ((event.request.url.indexOf('http') === 0))
+          {
+            console.log("---add request to cache now");
+            cache.put(event.request, response.clone());
+            // try
+            // {
+            //   console.log("---add request to cache now");
+            //   cache.addAll([event.request]);
+            // }
+            // catch(err)
+            // {
+            //   console.log(err);
+            // }
+          }
+          
           return response;
         });
       });
