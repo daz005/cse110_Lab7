@@ -56,25 +56,25 @@ function initializeServiceWorker()
   // B1. TODO - Check if 'serviceWorker' is supported in the current browser
   if ('serviceWorker' in navigator) 
   {
-    console.log("****B1. done!");
+    //console.log("****B1. done!");
     // B2. TODO - Listen for the 'load' event on the window object.
     window.addEventListener('load', 
     (event) => 
     {
-      console.log("****B2. done!");
+      //console.log("****B2. done!");
       // Steps B3-B6 will be *inside* the event listener's function created in B2
       // B3. TODO - Register './sw.js' as a service worker (The MDN article
       //            "Using Service Workers" will help you here)
       navigator.serviceWorker.register('./sw.js').then(
         (registration) => 
         {
-          console.log("****B3. done!");
+          //console.log("****B3. done!");
           
           // B4. TODO - Once the service worker has been successfully registered, console
           //            log that it was successful.      
-          //console.log('Service worker registration succeeded:', registration);
+          console.log('Service worker registration succeeded:', registration);
 
-          console.log("****B4. done!");
+          //console.log("****B4. done!");
 
         }, /*catch*/ 
         (error) => 
@@ -118,6 +118,10 @@ async function getRecipes()
   {
     recipes_local = JSON.parse(x);
     console.log("****A1. Done");
+    if (recipes_local.length > 0)
+    {
+      return recipes_local;
+    }
   }
 
 
@@ -134,7 +138,7 @@ async function getRecipes()
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
   //console.log("-----A3. TODO");
-  const promise = new Promise((saveRecipesToStorage, rejectionFunc) => 
+  const promise = new Promise((resolve, reject) => 
   {
         /**************************/
       // A4-A11 will all be *inside* the callback function we passed to the Promise
@@ -169,24 +173,19 @@ async function getRecipes()
             
             response.json().then( (recipe) => 
               {
-                console.log("-----A7. done:");
+                //console.log("-----A7. done:");
                 //console.log(recipe);
 
                 // A8. TODO - Add the new recipe to the recipes array
-                console.log("-----A8. done:");
+                //console.log("-----A8. done:");
                 recipes_remote[recipes_remote.length]=recipe;
-   
-                // A9. TODO - Check to see if you have finished retrieving all of the recipes,
-                //            if you have, then save the recipes to storage using the function
-                //            we have provided. Then, pass the recipes array to the Promise's
-                //            resolve() method.
-                console.log("-----A9. done1:");
-                saveRecipesToStorage(recipes_remote);
-                console.log("-----A9. done2:");
+
+                addRecipesToDocument([recipe]);
+                saveRecipesToStorage([recipe]);
+                
               }
             );
           });
-
         }
         catch(err )
         {
@@ -196,11 +195,30 @@ async function getRecipes()
 
           // A11. TODO - Pass any errors to the Promise's reject() function
           console.log("-----A11. TODO");
-          //rejectionFunc(err);
-        }
-      }
-  });
+          reject(err);
+        };
+      };//for (var i = 0; i < RECIPE_URLS.length; i++) 
 
+      // A9. TODO - Check to see if you have finished retrieving all of the recipes,
+      //            if you have, then save the recipes to storage using the function
+      //            we have provided. Then, pass the recipes array to the Promise's
+      //            resolve() method.
+      //console.log("-----A9. done1:");
+      //console.log(recipes_remote);
+      
+      
+      resolve(recipes_remote);
+      
+      //console.log("-----A9. done2:");
+ 
+  }).then((recipes) =>
+    {
+      //console.log("**** return recipes:");
+      //console.log(recipes);
+
+      return recipes;
+    }
+  );
 
 }
 
