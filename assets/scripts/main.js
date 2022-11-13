@@ -16,6 +16,8 @@ window.addEventListener('DOMContentLoaded', init);
 // Starts the program, all function calls trace back here
 async function init() 
 {
+  console.log("init");
+
   // initialize ServiceWorker
   initializeServiceWorker();
   
@@ -113,14 +115,18 @@ async function getRecipes()
   //            If there are recipes, return them.
   
   let x= localStorage.getItem('recipes');
-  let recipes_local=[];
+  let recipes=[];
+
   if (!!x)
   {
-    recipes_local = JSON.parse(x);
-    console.log("****A1. Done");
-    if (recipes_local.length > 0)
+    recipes = JSON.parse(x);
+   
+    if (recipes.length > 0)
     {
-      return recipes_local;
+      console.log("****A1. Done");
+      console.log(recipes);
+      addRecipesToDocument(recipes);
+      return recipes;
     }
   }
 
@@ -130,7 +136,7 @@ async function getRecipes()
   // from the network
   // A2. TODO - Create an empty array to hold the recipes that you will fetch
   //console.log("-----A2. TODO");
-  let recipes_remote=[];
+  //let recipes_remote=[];
 
   // A3. TODO - Return a new Promise. If you are unfamiliar with promises, MDN
   //            has a great article on them. A promise takes one parameter - A
@@ -170,21 +176,27 @@ async function getRecipes()
             // A7. TODO - For each fetch response, retrieve the JSON from it using .json().
             //            NOTE: .json() is ALSO asynchronous, so you will need to use
             //            "await" again
-            
+            console.log("-----A8. response:");
+            console.log(response);
             response.json().then( (recipe) => 
               {
                 //console.log("-----A7. done:");
                 //console.log(recipe);
 
                 // A8. TODO - Add the new recipe to the recipes array
-                //console.log("-----A8. done:");
-                recipes_remote[recipes_remote.length]=recipe;
+                console.log("-----A8. done:");
+                console.log(this);
+                console.log(recipe);
+                recipes[recipes.length]=recipe;
 
                 addRecipesToDocument([recipe]);
                 saveRecipesToStorage([recipe]);
-                
+                //cache.put(new request(recipe), response.clone());
+
+                //resolve(recipe);
               }
             );
+        
           });
         }
         catch(err )
@@ -207,14 +219,18 @@ async function getRecipes()
       //console.log(recipes_remote);
       
       
-      resolve(recipes_remote);
-      
+      //resolve(recipes);
+      //addRecipesToDocument(recipes);
       //console.log("-----A9. done2:");
  
   }).then((recipes) =>
     {
       //console.log("**** return recipes:");
       //console.log(recipes);
+
+      saveRecipesToStorage(recipes);
+      //addRecipesToDocument(recipes);
+      resolve(recipes);
 
       return recipes;
     }
@@ -241,6 +257,10 @@ function saveRecipesToStorage(recipes)
  */
 function addRecipesToDocument(recipes) 
 {
+  console.log("addRecipesToDocument(recipes) :");
+  console.log(recipes);
+  
+
   if (!recipes) return;
   
   let main = document.querySelector('main');
