@@ -18,12 +18,12 @@ self.addEventListener('install', function (event) {
 
       // CONSTANTS
       const RECIPE_REQUEST = [
-        // new Request('https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json'),
-        // new Request('https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json'),
-        // new Request('https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json'),
-        // new Request('https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json'),
-        // new Request('https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json'),
-        // new Request('https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json'),
+        new Request('https://introweb.tech/assets/json/1_50-thanksgiving-side-dishes.json'),
+        new Request('https://introweb.tech/assets/json/2_roasting-turkey-breast-with-stuffing.json'),
+        new Request('https://introweb.tech/assets/json/3_moms-cornbread-stuffing.json'),
+        new Request('https://introweb.tech/assets/json/4_50-indulgent-thanksgiving-side-dishes-for-any-holiday-gathering.json'),
+        new Request('https://introweb.tech/assets/json/5_healthy-thanksgiving-recipe-crockpot-turkey-breast.json'),
+        new Request('https://introweb.tech/assets/json/6_one-pot-thanksgiving-dinner.json'),
       ];      
     
       return cache.addAll(RECIPE_REQUEST);
