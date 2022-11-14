@@ -64,15 +64,17 @@ self.addEventListener('fetch', function (event) {
       {
         if(response)
         {
-          console.log("---in cache");
-          console.log(response);
+          // console.log("---in cache");
+          // console.log(response);
 
           return response;
         }
-        console.log("---not in cache");
-
+        
         return fetch(event.request).then(function(response) 
         {
+          console.log("---not in cache");
+          console.log(response);
+
           // check if request is made by chrome extensions or web page
           // if request is made for web page url must contains http.
           // if (!(event.request.url.indexOf('http') === 0)) 
@@ -94,8 +96,8 @@ self.addEventListener('fetch', function (event) {
           }
           else
           {
-            console.log("event.request.url:");
-            console.log(event.request.url);
+            // console.log("event.request.url:");
+            // console.log(event.request.url);
           }
           
           return response;
